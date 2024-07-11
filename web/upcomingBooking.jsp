@@ -75,12 +75,15 @@
             </tr>
             <sql:query var="result" dataSource="${conn}">
                 SELECT * FROM UPCOMINGBOOKING
-                WHERE RESIDENT_ICNUMBER =?
+                WHERE RESIDENT_ICNUMBER = ?
+                AND (
+                    BOOKING_DATE > CURRENT_DATE
+                    OR (BOOKING_DATE = CURRENT_DATE AND END_TIME > CURRENT_TIME)
+                )
                 ORDER BY BOOKING_DATE ASC
-                <sql:param>
-                    <jsp:getProperty name="account" property="residentICNumber"/>
-                </sql:param>
+                <sql:param value="${account.residentICNumber}" />
             </sql:query>
+
 
             <c:if test="${not empty result.rows}">
                 <%
